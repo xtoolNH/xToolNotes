@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { interval, Observable } from 'rxjs';
 import { switchMap, map } from 'rxjs/operators';
 import { trigger, transition, style, animate } from '@angular/animations';
+import { AngularCsv } from 'angular7-csv/dist/Angular-csv';
 import * as moment from 'moment';
 // import * as CanvasJS from './canvasjs.min';
 
@@ -45,9 +46,9 @@ export class NotesComponent implements OnInit {
   ngOnInit() {
     this.noteForm = this.formBuilder.group({
       index: [{value: null, disabled: true}],
-      task: '',
       time: '',
-      note: '',
+      task: '',
+      note: ''
     });
 
     this.hide = true;
@@ -184,10 +185,30 @@ export class NotesComponent implements OnInit {
     this.isEditNote = true;
     this.noteForm.setValue({
       index: selectedIndex,
+      time: newNote.time,
       task: newNote.task,
       note: newNote.note,
-      time: newNote.time
+
     });
+
+  }
+  sumitAllNotes()
+  {
+    let notelistStr = JSON.stringify(this.noteList);
+
+    let csvOptions = {
+      fieldSeparator: ',',
+      quoteStrings: '"',
+      decimalseparator: '.',
+      showLabels: true,
+      showTitle: true,
+      title: 'Your Holiday List :',
+      useBom: true,
+      noDownload: false,
+      headers: ["DateTime", "Task", "Notes"]
+    };
+
+     new AngularCsv(notelistStr, 'Test_Notes', csvOptions);
 
   }
 
