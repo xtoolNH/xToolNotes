@@ -50,6 +50,11 @@
   content: "\f077"; /* fa-chevron-up */
 }
 
+i.icon-red
+{
+  color: red;
+}
+
 .accordion .card-header:after {
   font-family: 'FontAwesome';
   content: "\f068";

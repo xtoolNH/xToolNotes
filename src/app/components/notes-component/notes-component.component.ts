@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { interval, Observable } from 'rxjs';
 import { switchMap, map } from 'rxjs/operators';
 import { trigger, transition, style, animate } from '@angular/animations';
+import * as moment from 'moment';
 // import * as CanvasJS from './canvasjs.min';
 
 @Component({
@@ -24,7 +25,7 @@ export class NotesComponent implements OnInit {
   noteForm: FormGroup;
   submitted: boolean;
   isNewNote = false;
-  notesData: { time: string, note: string }[] = [];
+  notesData: { time: string, task: string, note: string }[] = [];
   count = 0;
   editField: string;
   noteList: Array<any> = [];
@@ -44,8 +45,9 @@ export class NotesComponent implements OnInit {
   ngOnInit() {
     this.noteForm = this.formBuilder.group({
       index: [{value: null, disabled: true}],
+      task: '',
       time: '',
-      note: ['', Validators.required],
+      note: '',
     });
 
     this.hide = true;
@@ -132,18 +134,22 @@ export class NotesComponent implements OnInit {
 
 
   // back up code
-  add(value: number) {
+  // add(value: number) {
 
-    let newRecord = {
-      time: value,
-      note: ''
-    };
-    this.noteList.unshift(newRecord);
-  }
+  //   let newRecord = {
+  //     time: value,
+  //     note: ''
+  //   };
+  //   this.noteList.unshift(newRecord);
+  // }
 
   addNewNote() {
     this.isNewNote = true;
-    this.currentTime =  this.video.nativeElement.currentTime;
+    //this.currentTime =  this.video.nativeElement.currentTime;
+    //this.currentTime = new Date();
+    let dateTime = new Date();
+    this.currentTime = moment(dateTime).format("MM/DD/YYYY HH:mm:ss");
+
     this.noteForm.reset();
   }
 
@@ -176,6 +182,7 @@ export class NotesComponent implements OnInit {
     this.isEditNote = true;
     this.noteForm.setValue({
       index: selectedIndex,
+      task: newNote.task,
       note: newNote.note,
       time: newNote.time
     });
