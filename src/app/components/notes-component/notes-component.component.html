@@ -27,7 +27,7 @@
   </div>
   <div *ngIf="showNotes">
     <div *ngIf="!isNewNote">
-      <a class="btn btn-default" (click)="addNewNote()">
+      <a class="btn btn-default" role="button" (click)="addNewNote()">
         <i class="fa fa-plus-circle" style="font-size: 45px;color: orange"></i>
       </a>
     </div>
@@ -97,9 +97,13 @@
             </td>
             <td>
               <!-- <a class="edit" title="Edit" data-toggle="tooltip" (click)="editNote(i)" ><i class="material-icons">&#xE254;</i></a> -->
-              <a class="delete" title="Delete" data-toggle="tooltip" (click)="deleteNote(i)">
-                <i class="material-icons">&#xE872;</i>
+              <a class="edit" title="Edit Note" data-toggle="tooltip" (click)="editNote(noteItem, i)">
+                <i class="material-icons">edit</i>
               </a>
+              <a class="delete" title="Delete Note" data-toggle="tooltip" (click)="deleteNote(i)">
+                <i class="material-icons">delete</i>
+              </a>
+
             </td>
           </tr>
         </tbody>

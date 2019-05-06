@@ -42,6 +42,7 @@ export class NotesComponent implements OnInit {
 
   ngOnInit() {
     this.noteForm = this.formBuilder.group({
+      index: [{value: null, disabled: true}],
       time: '',
       note: ['', Validators.required],
     });
@@ -146,8 +147,14 @@ export class NotesComponent implements OnInit {
   }
 
   sumitNote() {
-    this.noteForm.controls.time.setValue(this.currentTime);
-    this.noteList.unshift(this.noteForm.value);
+    let noteIndex = this.noteForm.getRawValue().index;
+    if (noteIndex != null) {
+      this.noteList[noteIndex] = this.noteForm.value;
+    } else {
+      this.noteForm.controls.time.setValue(this.currentTime);
+      this.noteList.unshift(this.noteForm.value);
+    }
+
     this.isNewNote = false;
   }
 
@@ -161,12 +168,16 @@ export class NotesComponent implements OnInit {
     this.isNewNote = false;
   }
 
-  // editNote(item: any)
-  // {
-  //   let updateItem = this.noteList.find(index, newItem.id);
-  //   let index = this.noteList.indexOf(updateItem);
-  //   this.itemArray.items[index] = newItem;
-  // }
+  editNote(newNote: any, selectedIndex: any)
+  {
+    this.isNewNote = true;
+    this.noteForm.setValue({
+      index: selectedIndex,
+      note: newNote.note,
+      time: newNote.time
+    });
+
+  }
 
 
 
