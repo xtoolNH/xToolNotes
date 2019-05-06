@@ -1,0 +1,206 @@
+<div class="container">
+  <nav class="navbar navbar-expand-lg pt-0 pb-0 navbar-light bg-white">
+    <a class="navbar-brand" href="#"> <img src="../../assets/images/logo.PNG" class="logo" alt=""></a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+      aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse justify-content-end navbar-collapse" id="navbarSupportedContent">
+      <div class="custom-file col-sm-5 mr-2">
+        <input type="file" id="flup" (change)=getfolder($event) webkitdirectory mozdirectory msdirectory odirectory
+          directory multiple class="custom-file-input" id="customFile">
+        <label class="custom-file-label" for="customFile">Choose file</label>
+      </div>
+      <button class="btn btn-outline-primary my-2 my-sm-0" type="submit" (click)="playCharts()">Start</button>
+    </div>
+  </nav>
+
+  <div class="row">
+    <div class="col-md-6 " id="video-div">
+      <video id="video" class="video" #video controls>
+      </video>
+    </div>
+    <div class="col-md-3" id="video-div-user">
+      <video class="videoUser" #videoUser controls>
+      </video>
+    </div>
+  </div>
+  <div *ngIf="showNotes">
+    <div *ngIf="!isNewNote">
+      <a class="btn btn-default" (click)="addNewNote()">
+        <i class="fa fa-plus-circle" style="font-size: 45px;color: orange"></i>
+      </a>
+    </div>
+    <div class="container border" *ngIf="isNewNote">
+      <div class="row border">
+        <h5>Add Note</h5>
+      </div>
+      <form class="mt-3" [formGroup]="noteForm">
+        <div class="form-group row">
+          <label class="col-sm-1 col-form-label mt-4">Note :</label>
+          <div class="col-sm-6">
+            <label>Time = {{currentTime}}</label>
+            <textarea type="" class="form-control" formControlName="note" placeholder="Enter Note"></textarea>
+          </div>
+        </div>
+        <div class="form-group row">
+          <div class="col-sm-3">
+            <button type="submit" (click)="sumitNote()" class="btn btn-primary btn-sm">Save</button>
+            <button class="btn btn-secondary btn-sm ml-1" (click)="reset()">Cancel</button>
+          </div>
+        </div>
+      </form>
+
+    </div>
+    <!-- <div class="container" *ngIf="isNewNote" >
+    <div class="row">
+      <div class="col-md-6 offset-md-3">
+        <h3>Note</h3>
+
+        <form [formGroup]="noteForm">
+          <div class="form-group row">
+            <div class="col-sm-2">
+              <label>Note : </label>
+            </div>
+            <div class="col-sm-8">
+              <textarea class="form-control" formControlName="note"></textarea>
+            </div>
+          </div>
+          <div class="form-group row">
+            <button type="submit" (click)="sumitNote()" class="btn btn-primary btn-sm">Save</button>
+            <button class="btn btn-secondary btn-sm" (click)="reset()">Cancel</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div> -->
+    <div class="container border mt-1">
+      <h5>Note List</h5>
+    </div>
+    <div id="table" class="table-editable">
+
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th>Time</th>
+            <th>Note</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let noteItem of noteList; let i=index">
+            <td>
+              <span contenteditable="false">{{noteItem.time }}</span>
+            </td>
+            <td>
+              <span>{{noteItem.note}}</span>
+            </td>
+            <td>
+              <!-- <a class="edit" title="Edit" data-toggle="tooltip" (click)="editNote(i)" ><i class="material-icons">&#xE254;</i></a> -->
+              <a class="delete" title="Delete" data-toggle="tooltip" (click)="deleteNote(i)">
+                <i class="material-icons">&#xE872;</i>
+              </a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <!-- <div class="card note-height">
+      <h5 class="card-header text-uppercase">Notes list</h5>
+      <div class="card-body">
+        <div id="table" class="table-editable">
+          <table class="table table-bordered table-responsive-md table-striped text-center">
+            <tr>
+              <th class="text-center">Time</th>
+              <th class="text-center">Note</th>
+              <th class="text-center">Action</th>
+            </tr>
+            <tr *ngFor="let noteItem of noteList;">
+                <td>
+                    <span contenteditable="false">{{noteItem.time}}</span>
+                  </td>
+              <td>
+                <span (keyup)="changeValue(noteItem.time, 'note', $event)" (blur)="updateList(noteItem.time, 'note', $event)" contenteditable="true">{{noteItem.note}}</span>
+              </td>
+              <td>
+                <span class="table-remove">
+                  <button type="button" mdbBtn color="danger" rounded="true" size="sm" class="my-0" (click)="remove(noteItem.time)">Remove</button>
+                </span>
+              </td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div> -->
+
+  <!-- <div id="accordion">
+        <div class="card">
+          <div class="card-header" id="heading-2">
+            <h5 class="mb-0">
+              <a class="collapsed" role="button" data-toggle="collapse" href="#collapse-2" aria-expanded="false" aria-controls="collapse-2">
+                Item 2
+              </a>
+            </h5>
+          </div>
+          <div id="collapse-2" class="collapse" data-parent="#accordion" aria-labelledby="heading-2">
+            <div class="card-body">
+              Text 2
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header" id="heading-3">
+            <h5 class="mb-0">
+              <a class="collapsed" role="button" data-toggle="collapse" href="#collapse-3" aria-expanded="false" aria-controls="collapse-3">
+                Item 3
+              </a>
+            </h5>
+          </div>
+          <div id="collapse-3" class="collapse" data-parent="#accordion" aria-labelledby="heading-3">
+            <div class="card-body">
+              Text 3
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="container">
+          <div id="accordion" class="accordion">
+              <div class="card mb-0">
+                  <div class="card-header collapsed" data-toggle="collapse" href="#collapseOne">
+                      <a class="card-title">
+                          Item 1
+                      </a>
+                  </div>
+                  <div id="collapseOne" class="card-body collapse" data-parent="#accordion" >
+                      <p>Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt
+                          aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat
+                          craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+                      </p>
+                  </div>
+                  <div class="card-header collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">
+                      <a class="card-title">
+                        Item 2
+                      </a>
+                  </div>
+                  <div id="collapseTwo" class="card-body collapse" data-parent="#accordion" >
+                      <p>Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt
+                          aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat
+                          craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+                      </p>
+                  </div>
+                  <div class="card-header collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseThree">
+                      <a class="card-title">
+                        Item 3
+                      </a>
+                  </div>
+                  <div id="collapseThree" class="collapse" data-parent="#accordion" >
+                      <div class="card-body">Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt
+                          aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. samus labore sustainable VHS.
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div> -->
+</div>

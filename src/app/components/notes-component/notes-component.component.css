@@ -1,0 +1,61 @@
+#video-div {
+  width: 50%;
+  float: left; /* add this */
+  /* border: 1px solid red; */
+  margin: 10px auto;
+}
+
+#video-div-user {
+  width: 50%;
+  float: left;
+  margin: 10px auto;
+}
+
+.video {
+  display: block;
+  height: 275px;
+  width: 100%;
+  -o-object-fit: fill;
+  object-fit: fill;
+  /* margin: auto; */
+  max-width: 600px;
+}
+
+.videoUser {
+  display: block;
+  height: 275px;
+  width: 100%;
+  -o-object-fit: fill;
+  object-fit: fill;
+  /* margin: auto; */
+  max-width: 600px;
+}
+
+.note-height {
+  height: 300px;
+  overflow: auto;
+}
+
+.mb-0 > a {
+  display: block;
+  position: relative;
+}
+.mb-0 > a:after {
+  content: "\f078"; /* fa-chevron-down */
+  font-family: 'FontAwesome';
+  position: absolute;
+  right: 0;
+}
+.mb-0 > a[aria-expanded="true"]:after {
+  content: "\f077"; /* fa-chevron-up */
+}
+
+.accordion .card-header:after {
+  font-family: 'FontAwesome';
+  content: "\f068";
+  float: right;
+}
+.accordion .card-header.collapsed:after {
+  /* symbol for "collapsed" panels */
+  content: "\f067";
+}
