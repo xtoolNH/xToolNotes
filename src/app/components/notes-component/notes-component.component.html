@@ -27,13 +27,14 @@
   </div>
   <div *ngIf="showNotes">
     <div *ngIf="!isNewNote">
-      <a class="btn btn-default" role="button" (click)="addNewNote()">
+      <a href='javascript:void(0);' class="btn" (click)="addNewNote()" title="Add Note" data-toggle="tooltip" >
         <i class="fa fa-plus-circle" style="font-size: 45px;color: orange"></i>
       </a>
     </div>
     <div class="container border" *ngIf="isNewNote">
       <div class="row border">
-        <h5>Add Note</h5>
+        <h5 *ngIf="!isEditNote" >Add Note</h5>
+        <h5 *ngIf="isEditNote" > Edit Note</h5>
       </div>
       <form class="mt-3" [formGroup]="noteForm">
         <div class="form-group row">
@@ -97,10 +98,10 @@
             </td>
             <td>
               <!-- <a class="edit" title="Edit" data-toggle="tooltip" (click)="editNote(i)" ><i class="material-icons">&#xE254;</i></a> -->
-              <a class="edit" title="Edit Note" data-toggle="tooltip" (click)="editNote(noteItem, i)">
+              <a href='javascript:void(0);' class="btn" title="Edit Note" data-toggle="tooltip" (click)="editNote(noteItem, i)">
                 <i class="material-icons">edit</i>
               </a>
-              <a class="delete" title="Delete Note" data-toggle="tooltip" (click)="deleteNote(i)">
+              <a href='javascript:void(0);' class="btn" title="Delete Note" data-toggle="tooltip" (click)="deleteNote(i)">
                 <i class="material-icons">delete</i>
               </a>
 

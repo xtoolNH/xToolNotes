@@ -36,6 +36,7 @@ export class NotesComponent implements OnInit {
   showNotes = false;
   videoCurrentTime: any;
   currentTime: any;
+  isEditNote = false;
 
 
   constructor(private formBuilder: FormBuilder) { }
@@ -150,6 +151,7 @@ export class NotesComponent implements OnInit {
     let noteIndex = this.noteForm.getRawValue().index;
     if (noteIndex != null) {
       this.noteList[noteIndex] = this.noteForm.value;
+      this.isEditNote = false;
     } else {
       this.noteForm.controls.time.setValue(this.currentTime);
       this.noteList.unshift(this.noteForm.value);
@@ -171,6 +173,7 @@ export class NotesComponent implements OnInit {
   editNote(newNote: any, selectedIndex: any)
   {
     this.isNewNote = true;
+    this.isEditNote = true;
     this.noteForm.setValue({
       index: selectedIndex,
       note: newNote.note,
