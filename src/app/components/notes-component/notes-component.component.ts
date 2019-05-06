@@ -202,10 +202,10 @@ export class NotesComponent implements OnInit {
       decimalseparator: '.',
       showLabels: true,
       showTitle: true,
-      title: 'Your Holiday List :',
+      title: 'Notes List',
       useBom: true,
       noDownload: false,
-      headers: ["DateTime", "Task", "Notes"]
+      headers: ["DATETIME", "TASKS", "NOTES"]
     };
 
      new AngularCsv(notelistStr, 'Test_Notes', csvOptions);
