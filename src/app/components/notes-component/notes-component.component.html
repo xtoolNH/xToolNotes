@@ -40,7 +40,7 @@
         <div class="form-group row">
           <label class="col-sm-1 col-form-label mt-4">Task :</label>
           <div class="col-sm-6">
-            <label>Time - {{currentTime | slice: 11:20}}</label>
+            <label>Time - {{ noteForm.get('time').value ? (noteForm.get('time').value | slice: 11:20) : currentTime  | slice: 11:20}}</label>
             <input type="text" class="form-control" formControlName="task" placeholder="Enter Task">
           </div>
         </div>
@@ -58,7 +58,7 @@
         </div>
       </form>
     </div>
-    <div class="container border mt-1">
+    <div class="container border mt-3">
       <h5>Note List</h5>
     </div>
     <div id="table" class="table-editable">

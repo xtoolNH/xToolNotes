@@ -149,6 +149,7 @@ export class NotesComponent implements OnInit {
     //this.currentTime = new Date();
     let dateTime = new Date();
     this.currentTime = moment(dateTime).format("MM/DD/YYYY HH:mm:ss");
+    this.noteForm.controls.time.setValue(this.currentTime);
 
     this.noteForm.reset();
   }
@@ -158,6 +159,7 @@ export class NotesComponent implements OnInit {
     if (noteIndex != null) {
       this.noteList[noteIndex] = this.noteForm.value;
       this.isEditNote = false;
+      this.currentTime = null;
     } else {
       this.noteForm.controls.time.setValue(this.currentTime);
       this.noteList.unshift(this.noteForm.value);
