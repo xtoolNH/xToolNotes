@@ -59,7 +59,6 @@ export class NotesComponent implements OnInit {
   onSubmit() {
     this.submitted = true;
     this.isNewNote = false;
-    // stop here if form is invalid
     if (this.noteForm.invalid) {
       return;
     }
@@ -146,8 +145,6 @@ export class NotesComponent implements OnInit {
 
   addNewNote() {
     this.isNewNote = true;
-    //this.currentTime =  this.video.nativeElement.currentTime;
-    //this.currentTime = new Date();
     let dateTime = new Date();
     this.currentTime = moment(dateTime).format("MM/DD/YYYY HH:mm:ss");
     this.noteForm.controls.time.setValue(this.currentTime);
@@ -194,7 +191,7 @@ export class NotesComponent implements OnInit {
   }
   sumitAllNotes()
   {
-    let notelistStr = JSON.stringify(this.noteList);
+    let notelistStr = JSON.stringify(this.noteList,function(key, value){return (value == null) ? '' : value });
 
     let csvOptions = {
       fieldSeparator: ',',

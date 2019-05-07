@@ -50,9 +50,15 @@
   content: "\f077"; /* fa-chevron-up */
 }
 
-i.icon-red
-{
+i.icon-red {
   color: red;
+}
+
+label {
+  color: gray;
+}
+h5 {
+  color: gray;
 }
 
 .accordion .card-header:after {
