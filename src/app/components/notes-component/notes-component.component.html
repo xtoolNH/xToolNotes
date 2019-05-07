@@ -82,6 +82,7 @@
           </tr>
         </thead>
         <tbody>
+          <label class="mt-1" *ngIf="noteList.length == 0"> No Records Available.</label>
           <tr *ngFor="let noteItem of noteList; let i=index">
             <td>
               <span contenteditable="false">{{noteItem.time | slice: 11:20}}</span>
