@@ -60,6 +60,15 @@ label {
 h5 {
   color: gray;
 }
+.add-button {
+  font-size: 45px;
+  color: #FFA500;
+}
+.note-list
+{
+  max-height: 350px;
+  overflow: auto;
+}
 
 .accordion .card-header:after {
   font-family: 'FontAwesome';

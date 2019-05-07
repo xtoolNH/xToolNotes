@@ -25,10 +25,10 @@
       </video>
     </div>
   </div> -->
-  <div>
+  <div class="mt-2">
     <div *ngIf="!isNewNote">
       <a href='javascript:void(0);' (click)="addNewNote()" title="Add Note" data-toggle="tooltip">
-        <i class="fa fa-plus-circle" style="font-size: 45px;color: orange"></i>
+        <i class="fa fa-plus-circle add-button"></i>
       </a>
     </div>
     <div class="container border" *ngIf="isNewNote">
@@ -60,10 +60,10 @@
         </div>
       </form>
     </div>
-    <div class="container border mt-3">
+    <div class="container border mt-3 note-list">
 
       <div class="row border">
-        <div class="col-sm-10 mt-1" >
+        <div class="col-sm-10 mt-1">
             <h5>Note List</h5>
         </div>
          <div class="col-sm-2 mt-1 mb-1" >
@@ -107,6 +107,6 @@
         </tbody>
       </table>
     </div>
-        </div>
+    </div>
   </div>
 </div>
