@@ -205,7 +205,7 @@ export class NotesComponent implements OnInit {
       headers: ["DATETIME", "TASKS", "NOTES"]
     };
 
-     new AngularCsv(notelistStr, 'Test_Notes', csvOptions);
+     new AngularCsv(notelistStr, 'UserName_Notes', csvOptions);
 
   }
 
