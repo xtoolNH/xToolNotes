@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { interval, Observable } from 'rxjs';
 import { switchMap, map } from 'rxjs/operators';
 import { trigger, transition, style, animate } from '@angular/animations';
+import { NgbModal, ModalDismissReasons, NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { AngularCsv } from 'angular7-csv/dist/Angular-csv';
 import * as moment from 'moment';
 // import * as CanvasJS from './canvasjs.min';
@@ -24,6 +25,7 @@ export class NotesComponent implements OnInit {
   @ViewChild('video') video: ElementRef;
   @ViewChild('videoUser') videoUser: ElementRef;
   noteForm: FormGroup;
+  userForm: FormGroup;
   submitted: boolean;
   isNewNote = false;
   notesData: { time: string, task: string, note: string }[] = [];
@@ -36,25 +38,28 @@ export class NotesComponent implements OnInit {
   stressdata: Array<any> = [];
   hide: boolean;
   showNotes = false;
-  videoCurrentTime: any;
   currentTime: any;
   isEditNote = false;
+  userName: string;
+  submittedUser = false;
 
 
-  constructor(private formBuilder: FormBuilder) { }
+  constructor(private formBuilder: FormBuilder, private modalService: NgbModal, public ngbModalService: NgbActiveModal) { }
 
   ngOnInit() {
     this.noteForm = this.formBuilder.group({
-      index: [{value: null, disabled: true}],
+      index: [{ value: null, disabled: true }],
       time: '',
       task: '',
       note: ''
     });
 
+    this.userForm = this.formBuilder.group({
+      userName: ['', Validators.required]
+    });
+
     this.hide = true;
   }
-
-  get f() { return this.noteForm.controls; }
 
   onSubmit() {
     this.submitted = true;
@@ -62,7 +67,6 @@ export class NotesComponent implements OnInit {
     if (this.noteForm.invalid) {
       return;
     }
-
   }
 
   getfolder(e) {
@@ -146,7 +150,7 @@ export class NotesComponent implements OnInit {
   addNewNote() {
     this.isNewNote = true;
     let dateTime = new Date();
-    this.currentTime = moment(dateTime).format("MM/DD/YYYY HH:mm:ss");
+    this.currentTime = moment(dateTime).format('MM/DD/YYYY HH:mm:ss');
     this.noteForm.controls.time.setValue(this.currentTime);
 
     this.noteForm.reset();
@@ -176,8 +180,7 @@ export class NotesComponent implements OnInit {
     this.isNewNote = false;
   }
 
-  editNote(newNote: any, selectedIndex: any)
-  {
+  editNote(newNote: any, selectedIndex: any) {
     this.isNewNote = true;
     this.isEditNote = true;
     this.noteForm.setValue({
@@ -185,13 +188,11 @@ export class NotesComponent implements OnInit {
       time: newNote.time,
       task: newNote.task,
       note: newNote.note,
-
     });
 
   }
-  sumitAllNotes()
-  {
-    let notelistStr = JSON.stringify(this.noteList,function(key, value){return (value == null) ? '' : value });
+  saveAllNotes() {
+    let notelistStr = JSON.stringify(this.noteList, function (key, value) { return (value == null) ? '' : value });
 
     let csvOptions = {
       fieldSeparator: ',',
@@ -202,18 +203,27 @@ export class NotesComponent implements OnInit {
       title: 'Notes List',
       useBom: true,
       noDownload: false,
-      headers: ["DATETIME", "TASKS", "NOTES"]
+      headers: ['DATETIME', 'TASKS', 'NOTES']
     };
 
-     new AngularCsv(notelistStr, 'UserName_Notes', csvOptions);
+    new AngularCsv(notelistStr, this.userName + '_Notes', csvOptions);
 
   }
 
+  saveUser(modal: any) {
 
-
-  onRowClick(event, id) {
-    console.log(event.target.outerText, id);
+    this.submittedUser = true;
+    if (this.userForm.invalid)
+      return;
+    this.userName = this.userForm.value.userName;
+    this.saveAllNotes();
+    modal.close();
   }
 
+  open(content) {
+    this.userForm.reset();
+    this.submittedUser = false;
+    this.modalService.open(content);
+  }
 
 }

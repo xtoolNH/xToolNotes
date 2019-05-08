@@ -67,7 +67,7 @@
             <h5>Note List</h5>
         </div>
          <div class="col-sm-2 mt-1 mb-1" >
-            <button type="submit" *ngIf="noteList.length > 0" (click)="sumitAllNotes()" class="btn btn-primary btn-sm ">Save All</button>
+            <button *ngIf="noteList.length > 0" (click)="open(content)" class="btn btn-primary btn-sm ">Save All</button>
          </div>
         </div>
 
@@ -109,4 +109,28 @@
     </div>
     </div>
   </div>
+  <ng-template #content let-modal>
+    <div class="modal-header">
+      <h4 class="modal-title" id="modal-basic-title">User Profile </h4>
+      <button type="button" class="close" aria-label="Close" (click)="modal.dismiss()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <form class="mt-3" [formGroup]="userForm">
+        <div class="form-group">
+          <label for="userName">User Name</label>
+          <div class="input-group">
+            <input id="userName" class="form-control" formControlName="userName" placeholder="Enter User Name" [ngClass]="{ 'is-invalid': submittedUser && userForm.controls.userName.errors }" required>
+            <div *ngIf="submittedUser && userForm.controls.userName.errors" class="invalid-feedback">
+            <div *ngIf="userForm.controls.userName.errors.required">User name is required</div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button (click)="saveUser(modal)" class="btn btn-primary btn-sm ">Save To Continue..</button>
+    </div>
+  </ng-template>
 </div>
