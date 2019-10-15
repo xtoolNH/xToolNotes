@@ -1,40 +1,7 @@
-#video-div {
-  width: 50%;
-  float: left; /* add this */
-  /* border: 1px solid red; */
-  margin: 10px auto;
-}
 
-#video-div-user {
-  width: 50%;
-  float: left;
-  margin: 10px auto;
-}
 
-.video {
-  display: block;
-  height: 275px;
-  width: 100%;
-  -o-object-fit: fill;
-  object-fit: fill;
-  /* margin: auto; */
-  max-width: 600px;
-}
 
-.videoUser {
-  display: block;
-  height: 275px;
-  width: 100%;
-  -o-object-fit: fill;
-  object-fit: fill;
-  /* margin: auto; */
-  max-width: 600px;
-}
 
-.note-height {
-  height: 300px;
-  overflow: auto;
-}
 
 .mb-0 > a {
   display: block;

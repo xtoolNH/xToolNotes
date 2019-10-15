@@ -1,29 +1,29 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { interval, Observable } from 'rxjs';
-import { switchMap, map } from 'rxjs/operators';
-import { trigger, transition, style, animate } from '@angular/animations';
 import { NgbModal, ModalDismissReasons, NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { AngularCsv } from 'angular7-csv/dist/Angular-csv';
+import { NoteServiceService } from '../note-services/note-service.service';
+import { Note } from '../Models/note';
+import { Task } from '../Models/task';
 import * as moment from 'moment';
-// import * as CanvasJS from './canvasjs.min';
+import { isNullOrUndefined } from 'util';
+import { error } from '@angular/compiler/src/util';
+
+
+const TASK_DATA: Task[] = [
+  { Id: 1, Description: 'Task1', ProjectId: 0 },
+  { Id: 2, Description: 'Task2', ProjectId: 0 },
+  { Id: 3, Description: 'Task3', ProjectId: 0 },
+  { Id: 4, Description: 'Task4', ProjectId: 0 }];
+
 
 @Component({
   selector: 'app-notes-component',
   templateUrl: './notes-component.component.html',
-  styleUrls: ['./notes-component.component.css'],
-  animations: [trigger('fadeInOut', [
-    transition(':enter', [
-      style({ transform: 'translateX(-100%)', opacity: 0 }),
-      animate('1000ms', style({ transform: 'translateX(0)', opacity: 1 }))
-    ]),
-  ])
-  ]
+  styleUrls: ['./notes-component.component.css']
 })
 export class NotesComponent implements OnInit {
   files = [];
-  @ViewChild('video') video: ElementRef;
-  @ViewChild('videoUser') videoUser: ElementRef;
   noteForm: FormGroup;
   userForm: FormGroup;
   submitted: boolean;
@@ -31,11 +31,8 @@ export class NotesComponent implements OnInit {
   notesData: { time: string, task: string, note: string }[] = [];
   count = 0;
   editField: string;
-  noteList: Array<any> = [];
-  datetimedata: Array<any> = [];
-  attentiondata: Array<any> = [];
-  relaxeddata: Array<any> = [];
-  stressdata: Array<any> = [];
+  noteList: any;
+  noteListToSave: Note[] = [];
   hide: boolean;
   showNotes = false;
   currentTime: any;
@@ -43,109 +40,56 @@ export class NotesComponent implements OnInit {
   userName: string;
   submittedUser = false;
 
+  projects: any;
+  tests: any;
 
-  constructor(private formBuilder: FormBuilder, private modalService: NgbModal, public ngbModalService: NgbActiveModal) { }
+  tasks: Task[];
+  taskId: number;
+
+  constructor(private formBuilder: FormBuilder,
+    private modalService: NgbModal,
+    public ngbModalService: NgbActiveModal,
+    private noteService: NoteServiceService) { }
 
   ngOnInit() {
     this.noteForm = this.formBuilder.group({
-      index: [{ value: null, disabled: true }],
-      time: '',
-      task: '',
-      note: ''
+      Project: ['', Validators.required],
+      Test: ['', Validators.required],
+      Task: '',
+      NoteId: [{ value: null, disabled: true }],
+      DateTime: '',
+      NotesDescription: ['', Validators.required]
     });
 
-    this.userForm = this.formBuilder.group({
-      userName: ['', Validators.required]
-    });
-
-    this.hide = true;
-  }
-
-  onSubmit() {
-    this.submitted = true;
-    this.isNewNote = false;
-    if (this.noteForm.invalid) {
-      return;
-    }
-  }
-
-  getfolder(e) {
-    this.hide = true;
-    this.showNotes = false;
-
-    this.files = e.target.files;
-    const path = this.files[0].webkitRelativePath;
-    let file1 = this.files[0].name;
-    for (let ii = 0; ii < this.files.length; ii++) {
-      const arrFilename = (this.files[ii].name).split('_');
-      if (arrFilename[arrFilename.length - 1] === 'Video.mp4') {  // arrFilename[arrFilename.length - 1] === 'Video.avi'
-
-        const fileURL = URL.createObjectURL(this.files[ii]);
-        const videoNode = this.video.nativeElement;
-        videoNode.src = URL.createObjectURL(this.files[ii]);
-        // ToDo: Url will be change - Re-visit
-        const videoUser = this.videoUser.nativeElement;
-        videoUser.src = URL.createObjectURL(this.files[ii]);
-      }
-    }
-  }
-
-  playCharts() {
-
-    if (this.files.length === 0) {
-      alert('Please upload the test file..!');
-      return;
-    }
-
-    this.hide = false;
-    this.showNotes = true;
-    const videoList = document.getElementsByTagName('video');
-
-    for (let i = 0; i < videoList.length; i++) {
-      videoList[i].load();
-      videoList[i].paused ? videoList[i].play() : videoList[i].pause();
-    }
-    // Reset the note collection
+    this.tasks = TASK_DATA;
     this.noteList = [];
-    const source = interval(1000);
-
-    const vid = document.getElementById('video');
-    // this.videoCurrentTime = vid.currentTime;
-
-    // Note - Added logic to add rows dynamically
-    //const subscribe = source.subscribe(val => this.add(val));
-    //const videoEnd = document.getElementById('video');
-
-    // videoEnd.onended = function () {
-    //   setTimeout(() => subscribe.unsubscribe());
-    // };
-
+    this.noteListToSave = [];
+    this.hide = true;
+    this.submitted = false;
+    this.getProjects();
   }
 
-  // updateList(time: number, property: string, event: any) {
-  //   const editField = event.target.textContent;
-  //   this.noteList[time][property] = editField;
-  // }
+  get f() { return this.noteForm.controls; }
 
-  // remove(id: any) {
-  //   // this.awaitingPersonList.push(this.personList[id]);
-  //   this.noteList.splice(id, 1);
-  // }
+  getProjects() {
+    this.noteService.getProjects().subscribe(res => {
+      this.projects = res;
+    });
+  }
 
-  // changeValue(time: number, property: string, event: any) {
-  //   //this.editField = event.target.textContent;
-  // }
+  changeProject(event) {
+    let projectId = parseInt(event.target.value);
+    this.noteService.getTests(projectId).subscribe(res => {
+      this.tests = res;
+    });
+  }
 
-
-  // back up code
-  // add(value: number) {
-
-  //   let newRecord = {
-  //     time: value,
-  //     note: ''
-  //   };
-  //   this.noteList.unshift(newRecord);
-  // }
+  changeTest(event) {
+    let testId = parseInt(event.target.value);
+    this.noteService.getTests(testId).subscribe(res => {
+      //this.tasks  = res;
+    });
+  }
 
   addNewNote() {
     this.isNewNote = true;
@@ -156,74 +100,69 @@ export class NotesComponent implements OnInit {
     this.noteForm.reset();
   }
 
-  sumitNote() {
-    let noteIndex = this.noteForm.getRawValue().index;
-    if (noteIndex != null) {
+  onSubmit() {
+
+    this.submitted = true;
+    if (this.noteForm.invalid) {
+      this.isNewNote = true;
+      return;
+    }
+    let noteIndex = this.noteForm.getRawValue().NoteId;
+    if (!isNullOrUndefined(noteIndex)) {
       this.noteList[noteIndex] = this.noteForm.value;
       this.isEditNote = false;
       this.currentTime = null;
     } else {
-      this.noteForm.controls.time.setValue(this.currentTime);
+      this.noteForm.controls.DateTime.setValue(this.currentTime);
       this.noteList.unshift(this.noteForm.value);
     }
-
-    this.isNewNote = false;
+    this.reset();
   }
 
   deleteNote(index: any) {
     this.noteList.splice(index, 1);
   }
 
-
   reset() {
     this.noteForm.reset();
+    this.submitted = false;
     this.isNewNote = false;
   }
 
   editNote(newNote: any, selectedIndex: any) {
     this.isNewNote = true;
     this.isEditNote = true;
-    this.noteForm.setValue({
-      index: selectedIndex,
-      time: newNote.time,
-      task: newNote.task,
-      note: newNote.note,
+    this.noteService.getTests(newNote.Project.projectId).subscribe(res => {
+      this.tests = res;
     });
 
+    this.noteForm.setValue({
+      Project: newNote.Project,
+      Test: newNote.Test,
+      Task: newNote.Task,
+      NoteId: selectedIndex,
+      DateTime: newNote.DateTime,
+      NotesDescription: newNote.NotesDescription,
+    });
   }
+
   saveAllNotes() {
-    let notelistStr = JSON.stringify(this.noteList, function (key, value) { return (value == null) ? '' : value });
+    this.noteList.forEach(note => {
+      let noteToSave = new Note();
+      noteToSave.ProjectId = note.Project.projectId;
+      noteToSave.TestId = note.Test.testId;
+      noteToSave.TaskId = !isNullOrUndefined(note.Task.Id) ? note.Task.Id : 0;
+      noteToSave.DateTime = note.DateTime;
+      noteToSave.NoteId = note.NoteId;
+      noteToSave.NotesDescription = note.NotesDescription;
+      this.noteListToSave.push(noteToSave);
+    });
 
-    let csvOptions = {
-      fieldSeparator: ',',
-      quoteStrings: '"',
-      decimalseparator: '.',
-      showLabels: true,
-      showTitle: true,
-      title: 'Notes List',
-      useBom: true,
-      noDownload: false,
-      headers: ['DATETIME', 'TASKS', 'NOTES']
-    };
-
-    new AngularCsv(notelistStr, this.userName + '_Notes', csvOptions);
-
+    this.noteService.saveNotes(this.noteListToSave).subscribe(res => {
+      alert('Note saved successfully.');
+    }, error => {
+      alert('Something went wrong while save note.');
+      console.log(error);
+    });
   }
-
-  saveUser(modal: any) {
-
-    this.submittedUser = true;
-    if (this.userForm.invalid)
-      return;
-    this.userName = this.userForm.value.userName;
-    this.saveAllNotes();
-    modal.close();
-  }
-
-  open(content) {
-    this.userForm.reset();
-    this.submittedUser = false;
-    this.modalService.open(content);
-  }
-
 }

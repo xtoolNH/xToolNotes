@@ -1,35 +1,4 @@
 <div class="container">
-
-    <!-- <img  id="hikimage"src="http://admin:hik@2684@172.16.7.122/ISAPI/Streaming/channels/101/picture"
-    onload="if(typeof(this.imgsrc) == 'undefined') this.imgsrc = this.src; this.src = this.imgsrc + '?time=' + new Date().getTime();"
-    onerror="this.onload()" /> -->
-
-  <!-- <nav class="navbar navbar-expand-lg pt-0 pb-0 navbar-light bg-white">
-    <a class="navbar-brand" href="#"> <img src="../../assets/images/logo.PNG" class="logo" alt=""></a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-      aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button> -->
-    <!-- <div class="collapse justify-content-end navbar-collapse" id="navbarSupportedContent">
-      <div class="custom-file col-sm-5 mr-2">
-        <input type="file" id="flup" (change)=getfolder($event) webkitdirectory mozdirectory msdirectory odirectory
-          directory multiple class="custom-file-input" id="customFile">
-        <label class="custom-file-label" for="customFile">Choose file</label>
-      </div>
-      <button class="btn btn-outline-primary my-2 my-sm-0" type="submit" (click)="playCharts()">Start</button>
-    </div>
-  </nav>-->
-  <!--
-  <div class="row">
-    <div class="col-md-6 " id="video-div">
-      <video id="video" class="video" #video controls>
-      </video>
-    </div>
-    <div class="col-md-3" id="video-div-user">
-      <video class="videoUser" #videoUser controls>
-      </video>
-    </div>
-  </div> -->
   <div class="mt-2">
     <div *ngIf="!isNewNote">
       <a href='javascript:void(0);' (click)="addNewNote()" title="Add Note" data-toggle="tooltip">
@@ -38,28 +7,67 @@
     </div>
     <div class="container border" *ngIf="isNewNote">
       <div class="row border">
-          <div class="col-sm-10 mt-1" >
-              <h5 *ngIf="!isEditNote">Add Note</h5>
-              <h5 *ngIf="isEditNote"> Edit Note</h5>
-          </div>
+        <div class="col-sm-10 mt-1">
+          <h5 *ngIf="!isEditNote">Add Note</h5>
+          <h5 *ngIf="isEditNote">Edit Note</h5>
+        </div>
       </div>
       <form class="mt-3" [formGroup]="noteForm">
         <div class="form-group row">
-          <label class="col-sm-1 col-form-label mt-4">Task :</label>
-          <div class="col-sm-6">
-            <label>Time - {{ noteForm.get('time').value ? (noteForm.get('time').value | slice: 11:20) : currentTime  | slice: 11:20}}</label>
-            <input type="text" class="form-control" formControlName="task" placeholder="Enter Task">
+          <label class="col-sm-1">Project :</label>
+          <div class="col-sm-4">
+            <select class="form-control" formControlName="Project" (change)="changeProject($event)"
+            [ngClass]="{ 'is-invalid': submitted && f.Project.errors }" >
+              <option [ngValue]="null" disabled>Select Project</option>
+              <option *ngFor="let project of projects" [ngValue]="project">
+                {{project.projectName}}
+              </option>
+            </select>
+            <div *ngIf="submitted && f.Project.errors" class="invalid-feedback">
+              <div *ngIf="f.Project.errors.required">Project selection is required</div>
+            </div>
+          </div>
+        </div>
+        <div class="form-group row">
+          <label class="col-sm-1">Test :</label>
+          <div class="col-sm-4">
+            <select class="form-control" formControlName="Test" (change)="changeTest($event)"
+            [ngClass]="{ 'is-invalid': submitted && f.Test.errors }" >
+              <option [ngValue]="null" disabled>Select Test</option>
+              <option *ngFor="let test of tests" [ngValue]="test">
+                {{test.testName}}
+              </option>
+            </select>
+            <div *ngIf="submitted && f.Test.errors" class="invalid-feedback">
+              <div *ngIf="f.Test.errors.required">Test selection is required</div>
+            </div>
+          </div>
+        </div>
+        <div class="form-group row">
+          <label class="col-sm-1">Task :</label>
+          <div class="col-sm-4">
+            <select class="form-control" formControlName="Task">
+              <option [ngValue]="null" disabled>Select Task</option>
+              <option *ngFor="let task of tasks" [ngValue]="task">
+                {{task.Description}}
+              </option>
+            </select>
           </div>
         </div>
         <div class="form-group row">
           <label class="col-sm-1 col-form-label">Note :</label>
           <div class="col-sm-6">
-            <textarea type="" class="form-control" formControlName="note" placeholder="Enter Note"></textarea>
+            <textarea type="" class="form-control" formControlName="NotesDescription"
+              [ngClass]="{ 'is-invalid': submitted && f.NotesDescription.errors }" placeholder="Enter Note"></textarea>
+              <div *ngIf="submitted && f.NotesDescription.errors" class="invalid-feedback">
+                <div *ngIf="f.NotesDescription.errors.required">Note description is required</div>
+              </div>
           </div>
+
         </div>
         <div class="form-group row">
           <div class="col-sm-3">
-            <button type="submit" (click)="sumitNote()" class="btn btn-primary btn-sm">Save</button>
+            <button type="submit" (click)="onSubmit()" class="btn btn-primary btn-sm">Save</button>
             <button class="btn btn-secondary btn-sm ml-1" (click)="reset()">Cancel</button>
           </div>
         </div>
@@ -69,73 +77,54 @@
 
       <div class="row border">
         <div class="col-sm-10 mt-1">
-            <h5>Note List</h5>
+          <h5>Note List</h5>
         </div>
-         <div class="col-sm-2 mt-1 mb-1" >
-            <button *ngIf="noteList.length > 0" (click)="open(content)" class="btn btn-primary btn-sm ">Save All</button>
-         </div>
+        <div class="col-sm-2 mt-1 mb-1">
+          <button *ngIf="noteList.length > 0" (click)="saveAllNotes()" class="btn btn-primary btn-sm ">Save All</button>
         </div>
-
-    <div id="table" class="table-editable">
-      <table class="table table-hover">
-        <thead>
-          <tr>
-            <th>Time</th>
-            <th>Task</th>
-            <th>Note</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          <label class="mt-1" *ngIf="noteList.length == 0"> No Records Available.</label>
-          <tr *ngFor="let noteItem of noteList; let i=index">
-            <td>
-              <span contenteditable="false">{{noteItem.time | slice: 11:20}}</span>
-            </td>
-            <td>
-              <span>{{noteItem.task}}</span>
-            </td>
-            <td>
-              <span>{{noteItem.note}}</span>
-            </td>
-            <td>
-              <a href='javascript:void(0);' title="Edit Note" data-toggle="tooltip"
-                (click)="editNote(noteItem, i)">
-                <i class="material-icons">edit</i>
-              </a>
-              <a href='javascript:void(0);' title="Delete Note" data-toggle="tooltip"
-                (click)="deleteNote(i)">
-                <i class="material-icons icon-red">delete</i>
-              </a>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+      </div>
+      <div id="table" class="table-editable">
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th>Time</th>
+              <th>Project</th>
+              <th>Test</th>
+              <th>Task</th>
+              <th>Note</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <label class="mt-1" *ngIf="noteList.length == 0"> No Records Available.</label>
+            <tr *ngFor="let noteItem of noteList; let i=index">
+              <td>
+                <span contenteditable="false">{{noteItem.DateTime | slice: 11:20}}</span>
+              </td>
+              <td>
+                <span>{{noteItem.Project.projectName}}</span>
+              </td>
+              <td>
+                <span>{{noteItem.Test.testName}}</span>
+              </td>
+              <td>
+                <span>{{noteItem.Task.Description}}</span>
+              </td>
+              <td>
+                <span>{{noteItem.NoteDescription}}</span>
+              </td>
+              <td>
+                <a href='javascript:void(0);' title="Edit Note" data-toggle="tooltip" (click)="editNote(noteItem, i)">
+                  <i class="material-icons">edit</i>
+                </a>
+                <a href='javascript:void(0);' title="Delete Note" data-toggle="tooltip" (click)="deleteNote(i)">
+                  <i class="material-icons icon-red">delete</i>
+                </a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
-  <ng-template #content let-modal>
-    <div class="modal-header">
-      <h4 class="modal-title" id="modal-basic-title">User Profile </h4>
-      <button type="button" class="close" aria-label="Close" (click)="modal.dismiss()">
-        <span aria-hidden="true">&times;</span>
-      </button>
-    </div>
-    <div class="modal-body">
-      <form class="mt-3" [formGroup]="userForm">
-        <div class="form-group">
-          <label for="userName">User Name</label>
-          <div class="input-group">
-            <input id="userName" class="form-control" formControlName="userName" placeholder="Enter User Name" [ngClass]="{ 'is-invalid': submittedUser && userForm.controls.userName.errors }" required>
-            <div *ngIf="submittedUser && userForm.controls.userName.errors" class="invalid-feedback">
-            <div *ngIf="userForm.controls.userName.errors.required">User name is required</div>
-            </div>
-          </div>
-        </div>
-      </form>
-    </div>
-    <div class="modal-footer">
-      <button (click)="saveUser(modal)" class="btn btn-primary btn-sm ">Save To Continue..</button>
-    </div>
-  </ng-template>
 </div>

@@ -3,6 +3,7 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
+  baseUrl: 'http://ntvmdrconfig730:80/api/',
   production: false
 };
 
