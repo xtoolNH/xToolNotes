@@ -19,16 +19,29 @@ export class NoteServiceService {
     return this.http.post(this.baseUrl + 'TestMaster/GetTestMasterdata', {projectId: projectIdValue});
   }
 
-  getTasks() {
-    return this.http.get<Task[]> (this.baseUrl + 'api/taskcontroller');
+  getTasks(notes) {
+    return this.http.get<Task[]> (this.baseUrl + 'TaskMaster/Get',
+      {
+        params: {
+          projectId: notes.Project.projectId,
+          testId: notes.Test.testId
+        }
+      });
   }
 
-  getNotes() {
-    return this.http.get(this.baseUrl + 'api/notescontroller');
+  getNotes(notes) {
+    return this.http.get<Note[]> (this.baseUrl + 'Notes/Get',
+      {
+        params: {
+          projectId: notes.Project.projectId,
+          testId: notes.Test.testId,
+          taskId: notes.Task.Id
+        }
+      });
   }
 
   saveNotes(NotestList: Note[]) {
-    return this.http.post(this.baseUrl + 'api/notescontroller', JSON.stringify(NotestList));
+    return this.http.post(this.baseUrl + 'Notes/Insert', JSON.stringify(NotestList));
   }
 
 }

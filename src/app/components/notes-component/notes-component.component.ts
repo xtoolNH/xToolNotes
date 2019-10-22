@@ -43,7 +43,7 @@ export class NotesComponent implements OnInit {
   projects: any;
   tests: any;
 
-  tasks: Task[];
+  tasks: Task[] = [];
   taskId: number;
 
   constructor(private formBuilder: FormBuilder,
@@ -61,7 +61,7 @@ export class NotesComponent implements OnInit {
       NotesDescription: ['', Validators.required]
     });
 
-    this.tasks = TASK_DATA;
+    this.tasks = [];
     this.noteList = [];
     this.noteListToSave = [];
     this.hide = true;
@@ -84,10 +84,15 @@ export class NotesComponent implements OnInit {
     });
   }
 
-  changeTest(event) {
-    let testId = parseInt(event.target.value);
-    this.noteService.getTests(testId).subscribe(res => {
-      //this.tasks  = res;
+  changeTest() {
+    this.noteService.getTasks(this.noteForm.value).subscribe(res => {
+      this.tasks  = res;
+    });
+  }
+
+  changeTask() {
+    this.noteService.getNotes(this.noteForm).subscribe(res => {
+      this.noteList  = res;
     });
   }
 
@@ -95,7 +100,7 @@ export class NotesComponent implements OnInit {
     this.isNewNote = true;
     let dateTime = new Date();
     this.currentTime = moment(dateTime).format('MM/DD/YYYY HH:mm:ss');
-    this.noteForm.controls.time.setValue(this.currentTime);
+    this.noteForm.controls.DateTime.setValue(this.currentTime);
 
     this.noteForm.reset();
   }

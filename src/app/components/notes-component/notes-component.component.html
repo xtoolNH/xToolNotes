@@ -31,7 +31,7 @@
         <div class="form-group row">
           <label class="col-sm-1">Test :</label>
           <div class="col-sm-4">
-            <select class="form-control" formControlName="Test" (change)="changeTest($event)"
+            <select class="form-control" formControlName="Test" (change)="changeTest()"
             [ngClass]="{ 'is-invalid': submitted && f.Test.errors }" >
               <option [ngValue]="null" disabled>Select Test</option>
               <option *ngFor="let test of tests" [ngValue]="test">
@@ -46,7 +46,7 @@
         <div class="form-group row">
           <label class="col-sm-1">Task :</label>
           <div class="col-sm-4">
-            <select class="form-control" formControlName="Task">
+            <select class="form-control" formControlName="Task" (change)="changeTask()" >
               <option [ngValue]="null" disabled>Select Task</option>
               <option *ngFor="let task of tasks" [ngValue]="task">
                 {{task.Description}}
